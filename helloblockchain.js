@@ -181,7 +181,7 @@ function deployChaincode() {
         console.log(util.format("\nSuccessfully deployed chaincode: request=%j, response=%j", deployRequest, results));
         // Save the chaincodeID
         fs.writeFileSync(chaincodeIDPath, chaincodeID);
-        invoke();
+        process.exit(1);
     });
 
     deployTx.on('error', function(err) {
@@ -215,7 +215,7 @@ function invoke() {
     invokeTx.on('complete', function(results) {
         // Invoke transaction completed successfully
         console.log(util.format("\nSuccessfully completed chaincode invoke transaction: request=%j, response=%j", invokeRequest, results));
-        query();
+        process.exit(1);
     });
     invokeTx.on('error', function(err) {
         // Invoke transaction submission failed

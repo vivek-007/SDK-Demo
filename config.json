@@ -1,6 +1,6 @@
 {
    "chainName":"hello-world",
-   "deployWaitTime":"60",
+   "deployWaitTime":"100",
    "user": {
 	"username": "JohnDoe",
         "affiliation" : "group1"
@@ -9,24 +9,19 @@
       "chaincodePath":"chaincode",
       "functionName":"init",
       "args":[
-         "a",
-         "100",
-         "b",
-         "200"
+         "99"
       ]
    },
    "invokeRequest":{
-      "functionName":"invoke",
+      "functionName":"initProperty",
       "args":[
-         "a",
-         "b",
-         "10"
+         "Jane Doe", "974625413625", "5471", "Goa", "779"
       ]
    },
    "queryRequest":{
-      "functionName":"query",
+      "functionName":"readInit",
       "args":[
-         "a"
+         "Jane Doe"
       ]
    }
 }
