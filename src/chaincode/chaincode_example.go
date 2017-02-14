@@ -64,6 +64,9 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	} else if function == "initProperty" {
 		// Pushes property details to Blockchain network
 		return t.initProperty(stub, args)
+	} else if function == "transfer" {
+		// Transfers property from one owner to another
+		return t.transfer(stub, args)
 	}
 
 	fmt.Println("invoke did not find func: " + function) //error
@@ -138,6 +141,85 @@ func (t *SimpleChaincode) initProperty(stub shim.ChaincodeStubInterface, args []
 	}
 
 	fmt.Println("- end init property")
+	return nil, nil
+}
+
+// Transfer : transfers property from one owner to another
+func (t *SimpleChaincode) transfer(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	if len(args) != 3 {
+		return nil, errors.New("Incorrect number of arguments. Expected 3 arguments")
+	}
+
+	var err error
+
+	// Setting keys
+	var seller = args[0]
+	var surveyNo, _ = strconv.ParseInt(args[1], 10, 64)
+	var buyer = args[2]
+
+	// 1) Removing survey number from seller
+	// Get the current state of seller
+	sellerAsBytes, _ := stub.GetState(seller)
+
+	// Unmarshalling seller state
+	var sellerObj Owner
+	json.Unmarshal(sellerAsBytes, &sellerObj)
+
+	// Removing survey no. from seller
+	var surveyArr []int64
+	for i := 0; i < len(sellerObj.SurveyNos); i++ {
+		if sellerObj.SurveyNos[i] != surveyNo {
+			surveyArr[i] = sellerObj.SurveyNos[i]
+		}
+	}
+
+	// Assigning new survey list to sellerObj
+	sellerObj.SurveyNos = surveyArr
+
+	// Storing new state for sellerObj
+	sellerBytes, _ := json.Marshal(sellerObj)
+	err = stub.PutState(seller, sellerBytes)
+	if err != nil {
+		return nil, errors.New("An error occurred")
+	}
+
+	// 2) Adding buyer's name to survey list
+	// Get the current survey state
+	surveyAsBytes, _ := stub.GetState(args[1])
+
+	// Unmarshalling survey state
+	var surveyObj Survey
+	json.Unmarshal(surveyAsBytes, &surveyObj)
+
+	// Adding buyer's name to survey owner's list
+	surveyObj.Owners = append(surveyObj.Owners, buyer)
+
+	// Storing new state for surveyObj
+	surveyBytes, _ := json.Marshal(surveyObj)
+	err = stub.PutState(args[1], surveyBytes)
+	if err != nil {
+		return nil, errors.New("An error occurred")
+	}
+
+	// 3) Adding survey number to buyer
+	// Get the current state of buyer
+	buyerAsBytes, _ := stub.GetState(buyer)
+
+	// Unmarshalling buyer state
+	var buyerObj Owner
+	json.Unmarshal(buyerAsBytes, &buyerObj)
+
+	// Adding survey number to buyers survey number list
+	buyerObj.SurveyNos = append(buyerObj.SurveyNos, surveyNo)
+
+	// Store the new state of buyerObj
+	buyerBytes, _ := json.Marshal(buyerObj)
+	err = stub.PutState(buyer, buyerBytes)
+
+	if err != nil {
+		return nil, errors.New("An error occurred")
+	}
+
 	return nil, nil
 }
 

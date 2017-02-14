@@ -13,15 +13,15 @@
       ]
    },
    "invokeRequest":{
-      "functionName":"initProperty",
+      "functionName":"transfer",
       "args":[
-         "Jane Doe", "974625413625", "5471", "Goa", "779"
+         "Jane Doe", "5471", "John Doe"
       ]
    },
    "queryRequest":{
-      "functionName":"readInit",
+      "functionName":"readOwner",
       "args":[
-         "Jane Doe"
+         "John Doe"
       ]
    }
 }
