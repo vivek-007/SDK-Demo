@@ -273,6 +273,10 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 		return t.readOwner(stub, args)
 	} else if function == "readSurvey" { // read survey details
 		return t.readSurvey(stub, args)
+	} else if function == "readOwnerIndex" {
+		return t.readOwnerIndex(stub, args)
+	} else if function == "readSurveyIndex" {
+		return t.readSurveyIndex(stub, args)
 	}
 	fmt.Println("query did not find func: " + function) //error
 
@@ -342,6 +346,55 @@ func (t *SimpleChaincode) readSurvey(stub shim.ChaincodeStubInterface, args []st
 	str := append(a, bytes...)
 	str = append(str, a...)
 	return []byte(str), nil // returns JSON of survey details
+}
+
+// fetch entire details of owners on blockchain network
+func (t *SimpleChaincode) readOwnerIndex(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	// Retrieve all owner names as bytes
+	ownerListAsBytes, _ := stub.GetState(ownerIndexStr)
+	var ownerList []string
+	json.Unmarshal(ownerListAsBytes, &ownerList)
+
+	// fetch all owner details
+	var owners []Owner
+	for i := 0; i < len(ownerList); i++ {
+		bytesOwners, _ := stub.GetState(ownerList[i])
+		var owner Owner
+		json.Unmarshal(bytesOwners, &owner)
+		owners = append(owners, owner)
+	}
+
+	// Marshalling and appending ''
+	bytes, _ := json.Marshal(owners)
+	a := []byte("'")
+	str := append(a, bytes...)
+	str = append(str, a...)
+	return []byte(str), nil // returns JSON of entire owners on network
+}
+
+// fetch entire details of survey numbers on blockchain network
+func (t *SimpleChaincode) readSurveyIndex(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	// Retrieve all survey numbers as bytes
+	surveyListAsBytes, _ := stub.GetState(surveyIndexStr)
+	var surveyList []int64
+	json.Unmarshal(surveyListAsBytes, &surveyList)
+
+	// fetch all survey details
+	var surveys []Survey
+	for i := 0; i < len(surveyList); i++ {
+		arg := strconv.FormatInt(surveyList[i], 10)
+		bytesSurvey, _ := stub.GetState(arg)
+		var survey Survey
+		json.Unmarshal(bytesSurvey, &survey)
+		surveys = append(surveys, survey)
+	}
+
+	// Marshalling and appending ''
+	bytes, _ := json.Marshal(surveys)
+	a := []byte("'")
+	str := append(a, bytes...)
+	str = append(str, a...)
+	return []byte(str), nil // returns JSON of entire survey numbers on network
 }
 
 func main() {

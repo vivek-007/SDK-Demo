@@ -15,13 +15,11 @@
    "invokeRequest":{
       "functionName":"initProperty",
       "args":[
-         "Jane Doe", "968578254368", "7610", "Panaji", "895"
+         "Jane Doe", "968578254370", "7613", "Mapusa", "892"
       ]
    },
    "queryRequest":{
-      "functionName":"readOwner",
-      "args":[
-         "John Doe"
-      ]
+      "functionName":"readSurveyIndex",
+      "args":[]
    }
 }

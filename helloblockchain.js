@@ -60,7 +60,7 @@ function init() {
         chain.getUser(newUserName, function(err, user) {
             if (err) throw Error(" Failed to register and enroll " + deployerName + ": " + err);
             userObj = user;
-            invoke();
+            query();
         });
     } else {
         enrollAndRegisterUsers();
