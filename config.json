@@ -13,9 +13,9 @@
       ]
    },
    "invokeRequest":{
-      "functionName":"transfer",
+      "functionName":"initProperty",
       "args":[
-         "Jane Doe", "5471", "John Doe"
+         "Jane Doe", "968578254368", "7610", "Panaji", "895"
       ]
    },
    "queryRequest":{
