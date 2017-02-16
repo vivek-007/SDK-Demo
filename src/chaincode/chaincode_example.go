@@ -19,6 +19,7 @@ var surveyIndexStr = "_surveyIndex"
 
 // Owner struct stores owner specific details
 type Owner struct {
+	Name      string  `json:"name"`
 	Aadhar    int64   `json:"aadhar"`
 	SurveyNos []int64 `json:"surveyNumbers"`
 }
@@ -108,6 +109,7 @@ func (t *SimpleChaincode) initProperty(stub shim.ChaincodeStubInterface, args []
 
 	// Setting keys
 	var ownerName = args[0]
+	owner.Name = ownerName
 	var surveyNumber int64
 	surveyNumber, _ = strconv.ParseInt(args[2], 10, 64)
 
@@ -273,9 +275,9 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 		return t.readOwner(stub, args)
 	} else if function == "readSurvey" { // read survey details
 		return t.readSurvey(stub, args)
-	} else if function == "readOwnerIndex" {
+	} else if function == "readOwnerIndex" { // retrieve all owners
 		return t.readOwnerIndex(stub, args)
-	} else if function == "readSurveyIndex" {
+	} else if function == "readSurveyIndex" { // retrieve all survey details
 		return t.readSurveyIndex(stub, args)
 	}
 	fmt.Println("query did not find func: " + function) //error
@@ -366,10 +368,7 @@ func (t *SimpleChaincode) readOwnerIndex(stub shim.ChaincodeStubInterface, args 
 
 	// Marshalling and appending ''
 	bytes, _ := json.Marshal(owners)
-	a := []byte("'")
-	str := append(a, bytes...)
-	str = append(str, a...)
-	return []byte(str), nil // returns JSON of entire owners on network
+	return []byte(bytes), nil // returns JSON of entire owners on network
 }
 
 // fetch entire details of survey numbers on blockchain network
@@ -391,10 +390,7 @@ func (t *SimpleChaincode) readSurveyIndex(stub shim.ChaincodeStubInterface, args
 
 	// Marshalling and appending ''
 	bytes, _ := json.Marshal(surveys)
-	a := []byte("'")
-	str := append(a, bytes...)
-	str = append(str, a...)
-	return []byte(str), nil // returns JSON of entire survey numbers on network
+	return []byte(bytes), nil // returns JSON of entire survey numbers on network
 }
 
 func main() {
