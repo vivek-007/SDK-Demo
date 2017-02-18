@@ -13,13 +13,13 @@
       ]
    },
    "invokeRequest":{
-      "functionName":"initProperty",
+      "functionName":"debug",
       "args":[
-         "John Doe", "968578254371", "7615", "Ponda", "895"
+         "Jane", "85", "Bruce"
       ]
    },
    "queryRequest":{
-      "functionName":"readSurveyIndex",
-      "args":[]
+      "functionName":"readOwner",
+      "args":[ "Jane" ]
    }
 }
